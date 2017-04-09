@@ -1,17 +1,29 @@
 #include "myglwidget.h"
 #include <iostream>
 
-MyGLWidget::MyGLWidget()
-{
+MyGLWidget::MyGLWidget(){
 
 }
 
-MyGLWidget::MyGLWidget(QWidget*& parent): QGLWidget( parent){
-    std::cout << "Constructor called";
+MyGLWidget::MyGLWidget(QWidget*& parent): QGLWidget(parent){
+    this->setVisible(true);
 }
 
-void MyGLWidget::updateGL(){
+/*void MyGLWidget::updateGL(){
+    std::cout << "test !!!!!!!!!!!!!!!!!!!!";
     QGLWidget::glDraw();
+}*/
+
+void MyGLWidget::setAngle(int _angle){
+    this->angle = _angle;
+}
+
+int MyGLWidget::getAngle(){
+    return this->angle;
+}
+
+void MyGLWidget::receiveRotationZ(int _angle){
+    this->setAngle(_angle);
 }
 
 void MyGLWidget::initializeGL(){
@@ -39,6 +51,7 @@ void MyGLWidget::resizeGL(int width, int height){
     glLoadIdentity();
 
     glFrustum(-0.05,0.05,-0.05,0.05,0.1,100.0);
+    //glDraw();
 }
 
 void MyGLWidget::paintGL(){
@@ -52,7 +65,7 @@ void MyGLWidget::paintGL(){
     glTranslatef(0.0f, 0.0f, -7.0f);
 
     //--1.5 rotate Function
-    glRotatef(/*counter**/1,0.0f,0.0f,1.0f); //1 = angle, 2 = rotate x, 3 = rotate y, 4 =  rotate z
+    glRotatef(45 + this->angle*1,0.0f,0.0f,1.0f); //1 = angle, 2 = rotate x, 3 = rotate y, 4 =  rotate z
 
     //--1.6 rotate y
     //glRotatef(180,0.0f,1.0f,0.0f);
@@ -95,6 +108,7 @@ void MyGLWidget::paintGL(){
     // Execute all issued GL commands
     //glFlush(); // replace with glutSwapBuffers() for double buffered mode
 
-    // Increment counter
-    //counter++;
+    // Increment angle for rotation
+    this->angle++;
+    this->update(); //to update the widget constantly
 }

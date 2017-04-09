@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    //connect(sbxRotationZ,SIGNAL(clicked()),this,SLOT(receiveRotationZ(5)));
 }
 
 MainWindow::~MainWindow()
