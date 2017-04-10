@@ -1,12 +1,35 @@
 #include "myglwidget.h"
 #include <iostream>
+#include <QKeyEvent>
+
+double MyGLWidget::getCoord_x() const
+{
+    return coord_x;
+}
+
+void MyGLWidget::setCoord_x(double value)
+{
+    coord_x = value;
+}
+
+double MyGLWidget::getCoord_y() const
+{
+    return coord_y;
+}
+
+void MyGLWidget::setCoord_y(double value)
+{
+    coord_y = value;
+}
 
 MyGLWidget::MyGLWidget(){
 
 }
 
-MyGLWidget::MyGLWidget(QWidget*& parent): QGLWidget(parent){
+MyGLWidget::MyGLWidget(QWidget*& parent): QOpenGLWidget(parent){
     this->setVisible(true);
+    this->setFocusPolicy(Qt::StrongFocus);
+    //this->parentWidget()->sizePolicy().setHeightForWidth(true);
 }
 
 /*void MyGLWidget::updateGL(){
@@ -22,8 +45,29 @@ int MyGLWidget::getAngle(){
     return this->angle;
 }
 
+//Slot: set Rotation of quad
 void MyGLWidget::receiveRotationZ(int _angle){
     this->setAngle(_angle);
+}
+
+void MyGLWidget::keyPressEvent(QKeyEvent *event)
+{
+    //Move upwards (y)
+    if (event->key() == Qt::Key_W || event->key() == Qt::Key_Up) {
+        this->setCoord_y(this->getCoord_y() + 0.05);
+    }
+    //Move downwards (y)
+    else if(event->key() == Qt::Key_S || event->key() == Qt::Key_Down){
+        this->setCoord_y(this->getCoord_y() - 0.05);
+    }
+    //move to the left (x)
+    else if(event->key() == Qt::Key_A || event->key() == Qt::Key_Left){
+        this->setCoord_x(this->getCoord_x() - 0.05);
+    }
+    //move to the right (x)
+    else if(event->key() == Qt::Key_D || event->key() == Qt::Key_Right){
+        this->setCoord_x(this->getCoord_x() + 0.05);
+    }
 }
 
 void MyGLWidget::initializeGL(){
@@ -51,6 +95,7 @@ void MyGLWidget::resizeGL(int width, int height){
     glLoadIdentity();
 
     glFrustum(-0.05,0.05,-0.05,0.05,0.1,100.0);
+    //glFrustum(this->getCoord_x(),this->getCoord_y(),-0.05,0.05,0.1,100.0);
     //glDraw();
 }
 
@@ -61,8 +106,9 @@ void MyGLWidget::paintGL(){
     // Apply model view transformations
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    //--Change values here to move the object
-    glTranslatef(0.0f, 0.0f, -7.0f);
+    //--Change values here to move the camera
+    //glTranslatef(0.0f, 0.0f, -7.0f);
+    glTranslatef(this->getCoord_x(), this->getCoord_y(), -7.0f);
 
     //--1.5 rotate Function
     glRotatef(45 + this->angle*1,0.0f,0.0f,1.0f); //1 = angle, 2 = rotate x, 3 = rotate y, 4 =  rotate z
@@ -107,8 +153,8 @@ void MyGLWidget::paintGL(){
 
     // Execute all issued GL commands
     //glFlush(); // replace with glutSwapBuffers() for double buffered mode
-
     // Increment angle for rotation
     this->angle++;
     this->update(); //to update the widget constantly
+
 }
