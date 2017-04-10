@@ -39,8 +39,6 @@ public slots:
 
 signals:
    double zoomChanged(double zoom);
-
-
 };
 
 #endif // MYGLWIDGET_H

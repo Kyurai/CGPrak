@@ -63,7 +63,7 @@ void MyGLWidget::wheelEvent(QWheelEvent *event){
     }
     else if(event->delta() < 0){
         this->setZoom(this->getZoom()-0.1f);
-        emit zoomChanged(this->getZoom());
+        emit zoomChanged(this->getZoom()); //'emit' is just syntactic sugar
     }
 }
 
@@ -89,7 +89,8 @@ void MyGLWidget::keyPressEvent(QKeyEvent *event)
 
 void MyGLWidget::initializeGL(){
     glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_CULL_FACE); //--disable to make Objects always visible
+    glCullFace(GL_BACK); // don't draw back faces
+    glEnable(GL_CULL_FACE); // don't draw back faces
     glDepthFunc(GL_LEQUAL);
     glShadeModel(GL_FLAT);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
@@ -112,7 +113,6 @@ void MyGLWidget::resizeGL(int width, int height){
     glLoadIdentity();
 
     glFrustum(-0.05,0.05,-0.05,0.05,0.1,100.0);
-    //glFrustum(this->getCoord_x(),this->getCoord_y(),-0.05,0.05,0.1,100.0);
     //glDraw();
 }
 
@@ -123,12 +123,11 @@ void MyGLWidget::paintGL(){
     // Apply model view transformations
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    //--Change values here to move the camera
-    //glTranslatef(0.0f, 0.0f, -7.0f);
+    //--Change values here to move the cameras
     glTranslatef(this->getCoord_x(), this->getCoord_y(), -7.0f);
 
     //--1.5 rotate Function
-    glRotatef(45 + this->angle*1,0.0f,0.0f,1.0f); //1 = angle, 2 = rotate x, 3 = rotate y, 4 =  rotate z
+    glRotatef(45 + this->angle*1,1.3f,1.6f,1.0f); //1 = angle, 2 = rotate x, 3 = rotate y, 4 =  rotate z
 
     //--1.6 rotate y
     //glRotatef(180,0.0f,1.0f,0.0f);
@@ -139,9 +138,10 @@ void MyGLWidget::paintGL(){
     glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 
     //Used for zooming in and out
-    glScalef(this->getZoom(),this->getZoom(),1.0f );
+    glScalef(this->getZoom(),this->getZoom(),this->getZoom());
 
-    // Draw shape
+    /*
+    // Draw quad
     //--first Triangle
     glBegin(GL_TRIANGLES);
         //bottom right
@@ -166,6 +166,57 @@ void MyGLWidget::paintGL(){
         //bottom right
         glColor3f(1.0f,0.0f,0.0f);
         glVertex3f(1.0f, -1.0f, 0.0f);
+    glEnd();
+    */
+
+    //draw Cube
+    //front -- red
+    glBegin(GL_QUADS);
+        glColor3f(1.0f,0.0f,0.0f);
+        glVertex3f( 1.0f, -1.0f,  1.0f);
+        glVertex3f( 1.0f,  1.0f,  1.0f);
+        glVertex3f(-1.0f,  1.0f,  1.0f);
+        glVertex3f(-1.0f,  -1.0f,  1.0f);
+    glEnd();
+    //back -- green
+    glBegin(GL_QUADS);
+        glColor3f(0.0f,1.0f,0.0f);
+        glVertex3f( 1.0f,  1.0f,  -1.0f);
+        glVertex3f( 1.0f, -1.0f,  -1.0f);
+        glVertex3f(-1.0f,  -1.0f,  -1.0f);
+        glVertex3f(-1.0f,  1.0f,  -1.0f);
+    glEnd();
+    //left -- blue
+    glBegin(GL_QUADS);
+        glColor3f(0.0f,0.0f,1.0f);
+        glVertex3f(-1.0f,  1.0f,  1.0f);
+        glVertex3f(-1.0f,  1.0f, -1.0f);
+        glVertex3f(-1.0f, -1.0f, -1.0f);
+        glVertex3f(-1.0f, -1.0f,  1.0f);
+    glEnd();
+    //right -- lightblue
+    glBegin(GL_QUADS);
+        glColor3f(0.0f,1.0f,1.0f);
+        glVertex3f( 1.0f, -1.0f,  -1.0f);
+        glVertex3f( 1.0f,  1.0f,  -1.0f);
+        glVertex3f(1.0f,  1.0f,  1.0f);
+        glVertex3f(1.0f,  -1.0f,  1.0f);
+    glEnd();
+    //top -- pink
+    glBegin(GL_QUADS);
+        glColor3f(1.0f,0.0f,1.0f);
+        glVertex3f( 1.0f, 1.0f,-1.0f);
+        glVertex3f(-1.0f, 1.0f,-1.0f);
+        glVertex3f(-1.0f, 1.0f, 1.0f);
+        glVertex3f( 1.0f, 1.0f, 1.0f);             
+    glEnd();
+    //bottom -- gelb -- fail
+    glBegin(GL_QUADS);
+        glColor3f(1.0f,1.0f,0.0f);
+        glVertex3f( 1.0f, -1.0f,  1.0f);
+        glVertex3f(-1.0f, -1.0f,  1.0f);
+        glVertex3f(-1.0f, -1.0f, -1.0f);
+        glVertex3f( 1.0f, -1.0f, -1.0f);
     glEnd();
 
     //needed for gradient
