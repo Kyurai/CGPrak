@@ -11,7 +11,7 @@ private:
     int angle = 0;
     double coord_x = 0.0;
     double coord_y = 0.0;
-    //double coord_z = ;
+    double zoom = 1.0f;
 
 public:
    MyGLWidget();
@@ -22,6 +22,7 @@ public:
    void paintGL();
    //void updateGL();
    void keyPressEvent(QKeyEvent *event);
+   void wheelEvent(QWheelEvent *event);
 
    //Getter & Setter for Attributes
    void setAngle(int _angle);
@@ -30,9 +31,15 @@ public:
    void setCoord_x(double value);
    double getCoord_y() const;
    void setCoord_y(double value);
+   double getZoom() const;
+   void setZoom(double value);
 
 public slots:
    void receiveRotationZ(int _angle);
+
+signals:
+   double zoomChanged(double zoom);
+
 
 };
 

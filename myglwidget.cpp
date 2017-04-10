@@ -1,25 +1,31 @@
 #include "myglwidget.h"
 #include <iostream>
 #include <QKeyEvent>
+#include <QWheelEvent>
 
 double MyGLWidget::getCoord_x() const
 {
     return coord_x;
 }
-
 void MyGLWidget::setCoord_x(double value)
 {
     coord_x = value;
 }
-
 double MyGLWidget::getCoord_y() const
 {
     return coord_y;
 }
-
 void MyGLWidget::setCoord_y(double value)
 {
     coord_y = value;
+}
+double MyGLWidget::getZoom() const
+{
+    return zoom;
+}
+void MyGLWidget::setZoom(double value)
+{
+    zoom = value;
 }
 
 MyGLWidget::MyGLWidget(){
@@ -48,6 +54,17 @@ int MyGLWidget::getAngle(){
 //Slot: set Rotation of quad
 void MyGLWidget::receiveRotationZ(int _angle){
     this->setAngle(_angle);
+}
+
+void MyGLWidget::wheelEvent(QWheelEvent *event){
+    if(event->delta() > 0){
+        this->setZoom(this->getZoom()+0.1f);
+        emit zoomChanged(this->getZoom()); //emits signal to update slider
+    }
+    else if(event->delta() < 0){
+        this->setZoom(this->getZoom()-0.1f);
+        emit zoomChanged(this->getZoom());
+    }
 }
 
 void MyGLWidget::keyPressEvent(QKeyEvent *event)
@@ -120,6 +137,9 @@ void MyGLWidget::paintGL(){
 
     // Set color for drawing
     glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+
+    //Used for zooming in and out
+    glScalef(this->getZoom(),this->getZoom(),1.0f );
 
     // Draw shape
     //--first Triangle
